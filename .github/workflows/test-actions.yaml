@@ -1,0 +1,38 @@
+name: 抓取个人信息
+
+on:
+  workflow_dispatch:
+    inputs:
+      logid:
+        description: 'logid is required'
+        required: true
+      # 参数2
+      aaa:
+        description: 'aaaaaa'
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # macOS 或 Windows 也可根据需要修改
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-download-url: 'https://github.com/oven-sh/bun/releases/latest/download/bun-linux-x64.zip'
+
+      - name: Install Bun dependencies
+        run: |
+          if [ -f bun.lockb ]; then bun install --frozen-lockfile; fi
+          if [ -f package.json ] && [ ! -f bun.lockb ]; then bun install; fi
+
+
+      - name: Run node script
+      # 在这里将starId传递到脚本中starId
+        env:
+          logid: ${{ github.event.inputs.logid }}
+          aaa: ${{ github.event.inputs.aaa }}
+        run: bun run log.ts 
